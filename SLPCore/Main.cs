@@ -7,6 +7,8 @@ using SLPCore.Inits;
 using SLPCore.Types;
 using SLPCore.Exceptions;
 using SLPCore.Runtime;
+using BenchmarkDotNet.Running;
+using SLPCore;
 
 namespace SimpleCompiler
 {
@@ -19,7 +21,8 @@ namespace SimpleCompiler
             //{
             //    Run(i);
             //};
-            Run(@"..\..\..\bench.txt");
+            var summary = BenchmarkRunner.Run<BenchmarkLang>();
+            //Run(@"..\..\..\bench.txt");
             Console.ReadLine();
         }
         public static void Run(string FileName) 

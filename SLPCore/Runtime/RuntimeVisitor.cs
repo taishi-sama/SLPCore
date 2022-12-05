@@ -22,6 +22,7 @@ namespace SLPCore.Runtime
         TypeNameTable typeNameTable;
         ConvertorTable convertorTable;
         FromInitTable initializers;
+        public bool WriteOut { get; set; } = true;
         public RuntimeVisitor(TypeOfExpression typeTable, TypeNameTable typeNameTable, ConvertorTable convertorTable, FromInitTable initializers)
         {
             this.typeTable = typeTable;
@@ -280,7 +281,8 @@ namespace SLPCore.Runtime
         public object WriteNodeVisit(WriteNode node)
         {
             var t = node.Expr.Accept(this);
-            Console.WriteLine($"{t.value}");
+            if (WriteOut)
+                Console.WriteLine($"{t.value}");
             return null;
         }
 
