@@ -1,0 +1,32 @@
+begin
+  b := 2;
+  a := 3;
+  a := b;
+  cycle 3
+  begin
+    a := c;
+    c := 1
+  end;
+  while a do
+  begin
+    a := 4;
+    c := a
+  end;
+  repeat 
+    a := 4;
+    c := b
+  until b;
+  for i := 1 to 10 do
+  begin
+    a:= 1
+  end;
+  write(a);
+  if a then
+    b := a
+  else
+    a := b;
+  if b then
+    a := q + 1;
+  var a,b,c,d
+  
+end
