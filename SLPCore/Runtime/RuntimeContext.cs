@@ -45,7 +45,7 @@ namespace SLPCore
             variables.Add(varName, runtimeValue);
         }
         public Dictionary<string, RuntimeValue> variables = new Dictionary<string, RuntimeValue>();
-        public RuntimeContext ParentRuntimeContext { get; set; }
+        public RuntimeContext? ParentRuntimeContext { get; set; }
         public RuntimeContext(RuntimeContext parentContext = null)
         {
             this.ParentRuntimeContext = parentContext;

@@ -1,0 +1,9 @@
+begin
+	var a := 1;
+	var b : f64;
+	b := a;
+	b := b * 1.5;
+	var c := b as i64;
+	write(c);
+	
+end

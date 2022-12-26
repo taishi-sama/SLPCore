@@ -1,8 +1,5 @@
 begin
 	var start := millitime;
-	write("Time stamp 1");
-	write(millitime);
-	write("milliseconds");
 	var a,b : f64;
 	a := 2;
 	b := 1;
@@ -11,12 +8,6 @@ begin
 		cycle 10
 			b := b * 2 / 3;
 	until !(a <= 100000);
-	cycle 3
-		write(a);
 	var endt := millitime;
-	write("Time stamp 2");
-	write(endt);
-	write("milliseconds");
-	write("Delta:");
-	write(endt - start);
+	
 end
