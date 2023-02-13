@@ -7,7 +7,6 @@ begin
 		a := a + 1.5;
 		cycle 10
 			b := b * 2 / 3;
-	until !(a <= 100000);
+	until !(a <= 1000000);
 	var endt := millitime;
-	
 end

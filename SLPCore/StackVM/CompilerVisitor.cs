@@ -18,7 +18,6 @@ namespace SLPCore.StackVM
         FromInitTable initializers;
         VariableContext variableContext = new VariableContext();
         public List<string> constStringPool = new();
-        public bool WriteOut { get; set; } = true;
         public CompilerVisitor(TypeOfExpression typeTable, TypeNameTable typeNameTable, ConvertorTable convertorTable, FromInitTable initializers)
         {
             this.typeTable = typeTable;
@@ -141,7 +140,6 @@ namespace SLPCore.StackVM
                 ops.AddOpcodes(right);
                 switch (node.Operation)
                 {
-
                     case BinaryOperations.LogicOr:
                         ops.PushORB();
                         break;
@@ -379,6 +377,7 @@ namespace SLPCore.StackVM
                     ops.PushNEGB();
                     break;
                 default:
+                    throw new NotImplementedException();
                     break;
             }
             return ops;

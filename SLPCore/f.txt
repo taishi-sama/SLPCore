@@ -1,0 +1,5 @@
+begin
+	write(100);
+	write(100.0);
+	write("string test");
+end

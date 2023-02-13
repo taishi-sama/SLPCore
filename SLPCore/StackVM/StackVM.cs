@@ -18,6 +18,11 @@ namespace SLPCore.StackVM
         StackValue[] localVariables = new StackValue[1024];
         public List<string> constStringPool = new();
         public Stopwatch sw = Stopwatch.StartNew();
+        public void VMRun()
+        {
+            var vm1 = this;
+            while (vm1.Step()) ;
+        }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Step()
         {
@@ -199,7 +204,7 @@ namespace SLPCore.StackVM
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Push8()
         {
-            stack[stackPointer].i64 = BitConverter.ToInt64(bytecode, programCounter);
+            stack[stackPointer].i64 = BitConverter.ToInt64(bytecode.AsSpan(programCounter));
             stackPointer++;
             programCounter += 8;
         }
@@ -310,7 +315,7 @@ namespace SLPCore.StackVM
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void Jmp2()
         {
-            programCounter += BitConverter.ToInt16(bytecode, programCounter) + 2;
+            programCounter += BitConverter.ToInt16(bytecode.AsSpan(programCounter)) + 2;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void JmpT2()
@@ -318,7 +323,7 @@ namespace SLPCore.StackVM
             var b = stack[--stackPointer].@bool;
             if (b)
             {
-                programCounter += BitConverter.ToInt16(bytecode, programCounter) + 2;
+                programCounter += BitConverter.ToInt16(bytecode.AsSpan(programCounter)) + 2;
             }
             else
                 programCounter += 2;
@@ -333,18 +338,18 @@ namespace SLPCore.StackVM
                 programCounter += 2;
             }
             else
-                programCounter += BitConverter.ToInt16(bytecode, programCounter) + 2;
+                programCounter += BitConverter.ToInt16(bytecode.AsSpan(programCounter)) + 2;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void PopL()
         {
-            localVariables[BitConverter.ToUInt16(bytecode, programCounter)] = stack[--stackPointer];
+            localVariables[BitConverter.ToUInt16(bytecode.AsSpan(programCounter))] = stack[--stackPointer];
             programCounter += 2;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void PushL()
         {
-            stack[stackPointer++] = localVariables[BitConverter.ToUInt16(bytecode, programCounter)];
+            stack[stackPointer++] = localVariables[BitConverter.ToUInt16(bytecode.AsSpan(programCounter))];
             programCounter += 2;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,6 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using SimpleParser;
 using SimpleScanner;
+using SLPCore.ClosureVM;
 using SLPCore.Inits;
 using SLPCore.Operators;
 using SLPCore.Runtime;
@@ -29,7 +30,8 @@ namespace SLPCore
         //OpcodesEmitter ops;
         //List<string> strpool;
         StackVM.StackVM vm;
-        
+        ClosureVM.ClosureVM closureVM;
+
         [GlobalSetup(Target = nameof(RunInterpreter))]
         public void SetupInterpreter() 
         {
@@ -75,7 +77,31 @@ namespace SLPCore
         public void RunBytecode()
         {
             var vm1 = vm;
-            while (vm1.Step()) ;
+            vm1.VMRun();
+        }
+        [IterationSetup(Target = nameof(RunClosure))]
+        public void SetupClosure()
+        {
+            scanner = new Scanner();
+            scanner.SetSource(Text, 0);
+            parser = new Parser(scanner);
+            var b = parser.Parse();
+            (t, c, f, i) = InitLang.InitTables();
+            e = new TypeOfExpression();
+            var typechecker = new TypecheckVisitor(t, c, e);
+            parser.root.Accept(typechecker);
+            var compiler = new ClosureCompileVisitor(e, t, c, i);
+            var pred = parser.root.Accept(compiler);
+            var strpool = compiler.constStringPool;
+            closureVM = new ClosureVM.ClosureVM();
+            closureVM.Lambda = pred;
+            closureVM.constStringPool = strpool;
+        }
+        [Benchmark]
+        public void RunClosure()
+        {
+            var vm1 = closureVM;
+            vm1.Lambda(vm1);
         }
         [GlobalSetup(Target = nameof(RunSharp))] 
         public void SetupSharp() 
@@ -97,7 +123,7 @@ namespace SLPCore
                 {
                     b = b * 2 / 3;
                 }
-            } while (!(a >= 100000));
+            } while (!(a >= 1000000));
             var end = sw.Elapsed.TotalMilliseconds;
             //Console.WriteLine(a);
             //Console.WriteLine(b);

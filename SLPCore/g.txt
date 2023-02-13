@@ -1,0 +1,11 @@
+begin
+	var x:=10.5;
+	write(100);
+	write(100.0);
+	write("string test");
+	write(-x);
+	write(x as i64);
+	x:=20.9;
+	cycle 3
+		write(x);
+end
