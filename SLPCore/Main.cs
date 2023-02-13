@@ -37,6 +37,13 @@ namespace SimpleCompiler
 |             |                 |              |           |          |           |       |         |
 | RunBytecode |               1 |            1 | 499.28 ms | 9.877 ms | 10.143 ms |     ? |       ? |
 |  RunClosure |               1 |            1 | 211.48 ms | 4.173 ms |  5.570 ms |     ? |       ? |
+
+|      Method | InvocationCount | UnrollFactor |      Mean |    Error |   StdDev | Ratio | RatioSD |
+|------------ |---------------- |------------- |----------:|---------:|---------:|------:|--------:|
+|    RunSharp |         Default |           16 |  44.64 ms | 0.159 ms | 0.149 ms |  1.00 |    0.00 |
+|             |                 |              |           |          |          |       |         |
+| RunBytecode |               1 |            1 | 479.05 ms | 6.921 ms | 6.474 ms |     ? |       ? |
+|  RunClosure |               1 |            1 | 196.51 ms | 1.124 ms | 0.997 ms |     ? |       ? |
          */
         public static void Main()
         {
