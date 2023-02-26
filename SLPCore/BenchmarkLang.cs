@@ -125,23 +125,7 @@ namespace SLPCore
                 }
             } while (!(a >= 1000000));
             var end = sw.Elapsed.TotalMilliseconds;
-            //Console.WriteLine(a);
-            //Console.WriteLine(b);
-            //Console.WriteLine("Delta:");
-            //Console.WriteLine(end-start);
         }
-        //[Benchmark]
-
-        public void RunSharp2()
-        {
-            var sum = 0.0;
-            var i = 1;
-            while (i < 100000000) 
-            {
-                sum += 1.0 / i;
-                i += 1;
-            }
-
-        }
+        
     }
 }

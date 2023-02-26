@@ -64,34 +64,6 @@ namespace SimpleCompiler
             Console.ReadLine();
         }
 
-        public static void VMTest()
-        {
-            var ops = new OpcodesEmitter();
-            ops.PushPUSH8(15);
-            ops.PushPUSH8(5);
-            var f = ops.OpcodeList.Count;
-            ops.PushPUSH8(6);
-            ops.PushPUSH8(-10);
-            ops.PushSWAP();
-            ops.PushSUBI();
-            ops.PushWRTI();
-            var d = ops.OpcodeList.Count - f;
-            ops.PushJMP2((short)-(d + 3));
-            ops.PushSTOP();
-            var svm = new StackVM();
-            svm.bytecode = ops.AsByteArray();
-            svm.VMRun();
-
-        }
-        public static void VCTest()
-        {
-            var vc = new SLPCore.StackVM.VariableContext();
-            vc.AllocateNumber("a");
-            vc.AllocateNumber("b");
-            vc.AllocateNumber("c");
-            var vc2 = new SLPCore.StackVM.VariableContext(vc);
-            vc2.AllocateNumber("d");
-        }
         public static void CompileTest(string FileName)
         {
             string Text = File.ReadAllText(FileName);
