@@ -17,31 +17,12 @@ namespace SimpleCompiler
     public class SimpleCompilerMain
     {
         /*
-|      Method | InvocationCount | UnrollFactor |       Mean |    Error |   StdDev | Ratio | RatioSD |
-|------------ |---------------- |------------- |-----------:|---------:|---------:|------:|--------:|
-|    RunSharp |         Default |           16 |   385.8 ms |  2.54 ms |  2.25 ms |  1.00 |    0.00 |
-|             |                 |              |            |          |          |       |         |
-| RunBytecode |               1 |            1 | 6,336.1 ms | 36.42 ms | 34.07 ms |     ? |       ? |
-
-|      Method | InvocationCount | UnrollFactor |       Mean |   Error |  StdDev | Ratio | RatioSD |
-|------------ |---------------- |------------- |-----------:|--------:|--------:|------:|--------:|
-|    RunSharp |         Default |           16 |   384.3 ms | 0.04 ms | 0.03 ms |  1.00 |    0.00 |
-|             |                 |              |            |         |         |       |         |
-| RunBytecode |               1 |            1 | 4,453.9 ms | 6.53 ms | 5.79 ms |     ? |       ? |
-
-|      Method | InvocationCount | UnrollFactor |      Mean |    Error |    StdDev | Ratio | RatioSD |
-|------------ |---------------- |------------- |----------:|---------:|----------:|------:|--------:|
-|    RunSharp |         Default |           16 |  44.72 ms | 0.542 ms |  0.507 ms |  1.00 |    0.00 |
-|             |                 |              |           |          |           |       |         |
-| RunBytecode |               1 |            1 | 499.28 ms | 9.877 ms | 10.143 ms |     ? |       ? |
-|  RunClosure |               1 |            1 | 211.48 ms | 4.173 ms |  5.570 ms |     ? |       ? |
-
-|      Method | InvocationCount | UnrollFactor |      Mean |    Error |   StdDev | Ratio | RatioSD |
-|------------ |---------------- |------------- |----------:|---------:|---------:|------:|--------:|
-|    RunSharp |         Default |           16 |  44.64 ms | 0.159 ms | 0.149 ms |  1.00 |    0.00 |
-|             |                 |              |           |          |          |       |         |
-| RunBytecode |               1 |            1 | 479.05 ms | 6.921 ms | 6.474 ms |     ? |       ? |
-|  RunClosure |               1 |            1 | 196.51 ms | 1.124 ms | 0.997 ms |     ? |       ? |
+|      Method | InvocationCount | UnrollFactor |        Mean |     Error |    StdDev | Ratio | RatioSD |
+|------------ |---------------- |------------- |------------:|----------:|----------:|------:|--------:|
+|    RunSharp |         Default |           16 |    48.26 ms |  0.144 ms |  0.128 ms |  1.00 |    0.00 |
+|             |                 |              |             |           |           |       |         |
+| RunBytecode |               1 |            1 | 2,219.48 ms | 35.909 ms | 33.589 ms |     ? |       ? |
+|  RunClosure |               1 |            1 |   244.15 ms |  2.096 ms |  1.750 ms |     ? |       ? |
          */
         public static void Main()
         {
