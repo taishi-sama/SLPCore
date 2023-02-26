@@ -1,0 +1,12 @@
+begin
+	var start := millitime;
+	var a,b : f64;
+	a := 2;
+	b := 1;
+	repeat
+		a := a + 1.5;
+		cycle 10
+			b := b * 2 / 3;
+	until !(a <= 1000000);
+	var endt := millitime;
+end
