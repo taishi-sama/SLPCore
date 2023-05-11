@@ -1,9 +1,84 @@
 ﻿@page "/"
+@using SLPCore.Inits;
+@using SLPCore.StackVM;
+@using SLPCore.Types;
+@using SimpleParser;
+@using SimpleScanner;
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<InputTextArea @bind-Value="@prop" rows="10" class="container-fluid"></InputTextArea>
 
-Welcome to your new app.
+<p></p>
+
+<button class="btn btn-primary" @onclick="Run">Click me</button>
+
+<p>Output</p>
+
+<textarea class="container-fluid" rows="10" readonly>@output</textarea>
+
+<p>Log</p>
+
+<textarea class="container-fluid" rows="5" readonly>@log</textarea>
+
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code{
+    string prop = """"
+    begin
+        var i := 0;
+        while (i < 100) do
+        begin
+            i := i + 1;
+            write("i:");
+            write(i);
+        end;
+    end
+    """";
+    string log = "";
+    string output = "";
+    void Run()
+    {
+        try
+        {
+            log = "";
+            output = "";
+            Scanner scanner = new Scanner();
+            scanner.SetSource(prop, 0);
+
+            Parser parser = new Parser(scanner);
+            log += "Начало анализа кода...\n";
+            var b = parser.Parse();
+            if (!b)
+                log += "Ошибка парсера\n";
+            else
+            {
+                log += "Синтаксическое дерево построено\n";
+                //foreach (var st in parser.root.StList)
+                //    Console.WriteLine(st);
+                (var t, var c, var f, var i) = InitLang.InitTables();
+                var e = new TypeOfExpression();
+                var typechecker = new TypecheckVisitor(t, c, e);
+                parser.root.Accept(typechecker);
+                log += "Проверка типов завершена\n";
+                var compiler = new CompilerVisitor(e, t, c, i);
+                var bytecode = parser.root.Accept(compiler);
+                var strs = compiler.constStringPool;
+                var vm = new StackVM();
+                bytecode.PushSTOP();
+                vm.bytecode = bytecode.AsByteArray();
+                vm.constStringPool = strs;
+                log += "Запуск стэковой машины...\n";
+                vm.printer = (x) => { output += x + "\n"; };
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+                vm.VMRun();
+                log += $"Исполнение закончено за {sw.ElapsedMilliseconds} миллисекунд\n";
+            }
+        }
+        catch (Exception e)
+        {
+            log += e.ToString();
+        }
+    }
+}

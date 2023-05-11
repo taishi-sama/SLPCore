@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SLPWasm;
+using SLPCore;
 namespace SLPWasm
 {
     public class Program
