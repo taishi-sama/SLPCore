@@ -7,7 +7,9 @@
 
 <PageTitle>Index</PageTitle>
 
-<InputTextArea @bind-Value="@prop" rows="10" class="container-fluid"></InputTextArea>
+
+
+<InputTextArea @bind-Value="@prop" rows="10" spellcheck="false"  class="container-fluid"></InputTextArea>
 
 <p></p>
 
@@ -28,12 +30,19 @@
     string prop = """"
     begin
         var i := 0;
-        while (i < 100) do
-        begin
-            i := i + 1;
-            write("i:");
-            write(i);
-        end;
+        var g : f64;
+        g := 2.0;
+        while (i < 5) do
+            begin
+                i := i + 1;
+                g := g * 1.5;
+                write("i:");
+                write(i);
+                write("g:");
+                write(g);
+            end;
+        for var t := 0 to 10 do
+            write(t);
     end
     """";
     string log = "";
@@ -73,7 +82,7 @@
                 vm.printer = (x) => { output += x + "\n"; };
                 var sw = System.Diagnostics.Stopwatch.StartNew();
                 vm.VMRun();
-                log += $"Исполнение закончено за {sw.ElapsedMilliseconds} миллисекунд\n";
+                log += $"Исполнение закончено за {sw.ElapsedMilliseconds} миллисекунд(у)\n";
             }
         }
         catch (Exception e)
