@@ -1,0 +1,13 @@
+begin
+    var sum : f64;
+    var i: i64;
+    var n: i64;
+    n := 100000000;
+    sum := 0;
+    i := 1;
+    repeat
+		if (i - i / 13 * 13 == 0) then
+            sum := sum + 1.0/i;
+        i := i + 1;
+    until i >= n;
+end

@@ -12,15 +12,26 @@ namespace SLPCore.LLVMRT
 {
     public class LLVMGenVisitor : IASTVisitor<Node>
     {
+        private static readonly LLVMBool LLVMBoolFalse = new LLVMBool(0);
+        private static readonly LLVMValueRef NullValue = new LLVMValueRef(IntPtr.Zero);
         private readonly LLVMModuleRef module;
         private readonly LLVMBuilderRef builder;
         private readonly Stack<LLVMValueRef> valueStack = new Stack<LLVMValueRef>();
+        private LLVMValueRef function;
         LLVMVariableContext variableContext = new LLVMVariableContext();
 
         public LLVMGenVisitor(LLVMModuleRef module, LLVMBuilderRef builder)
         {
+            var context = LLVM.ContextCreate();
+            LLVM.ModuleCreateWithNameInContext("main", context);
+            LLVM.CreateBuilderInContext(context);
             this.module = module;
             this.builder = builder;
+            var function = LLVM.AddFunction(this.module, "main", LLVM.FunctionType(LLVM.VoidType(), Array.Empty<LLVMTypeRef>(), LLVMBoolFalse));
+            this.function = function;
+            LLVM.CreateBuilder();
+            
+
         }
         public Node AssingNodeVisit(AssignNode node)
         {

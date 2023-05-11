@@ -219,7 +219,7 @@ namespace SLPCore.StackVM
             }
             return ops;
         }
-
+        
         public OpcodesEmitter ConstantNodeVisit(ConstantNode node)
         {
             var ops = new OpcodesEmitter();

@@ -1,6 +1,7 @@
 begin
   var a,b,c;
   a := 5;
+  b := millitime
   while (a) do
   begin
     write(a);

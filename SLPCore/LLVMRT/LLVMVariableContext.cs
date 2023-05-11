@@ -26,6 +26,7 @@ namespace SLPCore.LLVMRT
                 currCont = currCont.ParentVariableContext;
             }
             throw new VariableNotExists(null, varName);
+            
         }
         public LLVMValueRef AllocateNumber(string varName, LLVMValueRef val)
         {

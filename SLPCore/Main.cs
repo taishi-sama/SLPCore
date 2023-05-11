@@ -13,6 +13,8 @@ using SLPCore.StackVM;
 using LLVMSharp;
 using SLPCore.LLVMRT;
 using SLPCore.ClosureVM;
+using SLPCore.ThreecodedVM;
+using SLPCore.ThreecodedIM;
 
 namespace SimpleCompiler
 {
@@ -44,6 +46,29 @@ namespace SimpleCompiler
 |             |                 |              |           |          |          |       |         |
 | RunBytecode |               1 |            1 | 479.05 ms | 6.921 ms | 6.474 ms |     ? |       ? |
 |  RunClosure |               1 |            1 | 196.51 ms | 1.124 ms | 0.997 ms |     ? |       ? |
+
+|                      Method | InvocationCount | UnrollFactor |       Mean |    Error |   StdDev | Ratio | RatioSD |
+|---------------------------- |---------------- |------------- |-----------:|---------:|---------:|------:|--------:|
+|                   RunSharp2 |         Default |           16 |   133.7 ms |  0.46 ms |  0.39 ms |  1.00 |    0.00 |
+|                             |                 |              |            |          |          |       |         |
+|                 RunBytecode |               1 |            1 | 6,100.5 ms | 39.25 ms | 34.80 ms |     ? |       ? |
+|                  RunClosure |               1 |            1 | 3,660.9 ms | 42.38 ms | 39.65 ms |     ? |       ? |
+| RunThreecodedVM_handwritten |               1 |            1 | 1,838.7 ms | 10.88 ms |  9.08 ms |     ? |       ? |
+
+|                      Method | InvocationCount | UnrollFactor |       Mean |    Error |   StdDev | Ratio | RatioSD |
+|---------------------------- |---------------- |------------- |-----------:|---------:|---------:|------:|--------:|
+|                   RunSharp2 |         Default |           16 |   133.8 ms |  0.23 ms |  0.19 ms |  1.00 |    0.00 |
+|                             |                 |              |            |          |          |       |         |
+|                  RunClosure |               1 |            1 | 3,638.1 ms | 49.75 ms | 44.10 ms |     ? |       ? |
+| RunThreecodedVM_handwritten |               1 |            1 | 1,331.1 ms |  8.35 ms |  7.81 ms |     ? |       ? |
+
+|                      Method | InvocationCount | UnrollFactor |       Mean |    Error |   StdDev | Ratio | RatioSD |
+|---------------------------- |---------------- |------------- |-----------:|---------:|---------:|------:|--------:|
+|                   RunSharp2 |         Default |           16 |   134.5 ms |  0.95 ms |  0.89 ms |  1.00 |    0.00 |
+|                             |                 |              |            |          |          |       |         |
+|                  RunClosure |               1 |            1 | 3,602.5 ms | 13.19 ms | 11.01 ms |     ? |       ? |
+| RunThreecodedVM_handwritten |               1 |            1 | 1,739.3 ms |  3.02 ms |  2.36 ms |     ? |       ? |
+|             RunThreecodedVM |               1 |            1 | 2,669.8 ms |  2.30 ms |  1.80 ms |     ? |       ? |
          */
         public static void Main()
         {
@@ -55,15 +80,105 @@ namespace SimpleCompiler
             //VMTest();
             //VCTest();
             //CompileTest(@"bench.txt");
+            //Test3VM();
             var summary = BenchmarkRunner.Run<BenchmarkLang>();
             //var b = new BenchmarkLang();
+            //b.SetupThreecodedVM();
+            //b.RunThreecodedVM();
             //b.SetupBytecode();
             //b.RunBytecode();
             //Run(@"..\..\..\bench.txt");
             //ClosureCompileTest(@"..\..\..\bench.txt");
+            //TestTIM();
+            //var summary2 = BenchmarkRunner.Run<BenchmarkLang2>();
             Console.ReadLine();
         }
+        
+        public static void Test3VM()
+        {
+            var t = new ThreecodedVM();
+            var c = new List<VMCommand>();
+            unsafe
+            {
+                //Constanst:
+                // 0    1   2           3   4   5
+                // 0.0  1   100000000   1.0 of1 of2
+                (*t.constants) = new VMValue() { f64 = 0.0 };
+                *(t.constants + 1) = new VMValue() { i64 = 1 };
+                *(t.constants + 2) = new VMValue() { i64 = 100000000 };
+                *(t.constants + 3) = new VMValue() { f64 = 1.0 };
+                *(t.constants + 4) = new VMValue() { i64 = 3 };
+                *(t.constants + 5) = new VMValue() { i64 = -5 };
+                //Variables:
+                // 0    1    2    3    4    5   
+                // ps   pi   pb   tmp
+                // f64  i64  bool f64
+                c.Add(new VMCommand() { opcode = SLPCore.ThreecodedVM.VMOpcodes.MOV8, in1 = t.constants + 0, out1 = t.registers + 0 });
+                c.Add(new VMCommand() { opcode = SLPCore.ThreecodedVM.VMOpcodes.MOV8, in1 = t.constants + 1, out1 = t.registers + 1 });
+                c.Add(new VMCommand() { opcode = SLPCore.ThreecodedVM.VMOpcodes.GEQI, in1 = t.registers + 1, in2 = t.constants + 2, out1 = t.registers + 2 });
+                c.Add(new VMCommand() { opcode = SLPCore.ThreecodedVM.VMOpcodes.JMPT, in1 = t.constants + 4, in2 = t.registers + 2 });
+                c.Add(new VMCommand() { opcode = SLPCore.ThreecodedVM.VMOpcodes.ADDFINVI, in1 = t.registers + 0, in2 = t.registers + 1, out1 = t.registers + 0 });
+                c.Add(new VMCommand() { opcode = SLPCore.ThreecodedVM.VMOpcodes.ADDI, in1 = t.registers + 1, in2 = t.constants + 1, out1 = t.registers + 1 });
+                c.Add(new VMCommand() { opcode = SLPCore.ThreecodedVM.VMOpcodes.JMP, in1 = t.constants + 5, });
+                c.Add(new VMCommand() { opcode = SLPCore.ThreecodedVM.VMOpcodes.WRTF, in1 = t.registers + 0 });
+                c.Add(new VMCommand() { opcode = SLPCore.ThreecodedVM.VMOpcodes.STOP });
+                t.commands = c.ToArray();
+            }
+            Console.WriteLine(t.DumpCommands());
+            t.VMRun();
+        }
+        public static void TestTIM()
+        {
+            string Text = """
+                begin
+                    var t := 1;
+                    if (false) then
+                      write(t)
+                    else
+                      t := 2;
+                    if (true) then
+                      t:= 3;
+                    write(t);
+                end
+                """;
+            Text = File.ReadAllText("../../../bench2.txt");
+            Scanner scanner = new Scanner();
+            scanner.SetSource(Text, 0);
 
+            Parser parser = new Parser(scanner);
+            Console.WriteLine($"Анализ ");
+            var b = parser.Parse();
+            if (!b)
+                Console.WriteLine("Ошибка");
+            else
+            {
+                Console.WriteLine("Синтаксическое дерево построено");
+                //foreach (var st in parser.root.StList)
+                //    Console.WriteLine(st);
+                (var t, var c, var f, var i) = InitLang.InitTables();
+                var e = new TypeOfExpression();
+                var typechecker = new TypecheckVisitor(t, c, e);
+                parser.root.Accept(typechecker);
+                Console.WriteLine("Проверка типов завершена");
+                var compiler = new ThreecodedCompilerVisitor(e, t, c, i);
+                var emitter = parser.root.Accept(compiler);
+                emitter.EmitSTOP();
+                var strs = compiler.constStringPool;
+                Console.WriteLine();
+                foreach (var (k, v) in compiler.constants)
+                {
+                    Console.WriteLine($"{k}: {v.i64}");
+                }
+                Console.WriteLine();
+                foreach (var com in emitter)
+                {
+                    Console.WriteLine(com);
+                }
+                var vm = IMtoVMTranslator.Process(emitter, compiler.constants, strs);
+                Console.WriteLine(vm.DumpCommands());
+                vm.VMRun();
+            }
+        }
         public static void CompileTest(string FileName)
         {
             string Text = File.ReadAllText(FileName);

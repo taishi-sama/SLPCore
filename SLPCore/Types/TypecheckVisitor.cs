@@ -290,6 +290,7 @@ namespace SLPCore.Types
 
         public TypeSLP MilliTimeVisit(MilliTimeNode node)
         {
+            typeTable[node] = typeNameTable.GetLangType("f64");
             return typeNameTable.GetLangType("f64");
         }
     }
